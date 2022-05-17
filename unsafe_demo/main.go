@@ -43,7 +43,7 @@ func main() {
 	fmt.Println(x.c)
 }
 
-//字符串转byte切片
+// string2bytes 字符串转byte切片
 func string2bytes(s string) []byte {
 	stringHeader := (*reflect.StringHeader)(unsafe.Pointer(&s))
 	bh := reflect.SliceHeader{
@@ -54,7 +54,7 @@ func string2bytes(s string) []byte {
 	return *(*[]byte)(unsafe.Pointer(&bh))
 }
 
-//byte切片转字符串
+//bytes2string byte切片转字符串
 func bytes2string(b []byte) string {
 	sliceHeader := (*reflect.SliceHeader)(unsafe.Pointer(&b))
 	sh := reflect.StringHeader{
@@ -64,12 +64,12 @@ func bytes2string(b []byte) string {
 	return *(*string)(unsafe.Pointer(&sh))
 }
 
-//byte切片转字符串
+// String byte切片转字符串
 func String(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-//字符串转byte切片
+// Str2Bytes 字符串转byte切片
 func Str2Bytes(s string) []byte {
 	x := (*[2]uintptr)(unsafe.Pointer(&s))
 	h := [3]uintptr{x[0], x[1], x[1]}
