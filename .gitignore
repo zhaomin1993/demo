@@ -1,0 +1,15 @@
+.vscode
+.DS_Store
+*.json
+temp
+*.pyc
+.idea/
+*.dev.yaml
+*.local.yaml
+__pycache__
+tools/*
+tools
+*.tar
+*.exe
+logs/
+*.log
