@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"reflect"
 	"unsafe"
 )
@@ -41,6 +42,7 @@ func main() {
 	pc := (*[]int)(unsafe.Pointer(uintptr(unsafe.Pointer(&x)) + unsafe.Offsetof(x.c)))
 	*pc = []int{1, 2, 3}
 	fmt.Println(x.c)
+	std.Println("--------over-------")
 }
 
 // string2bytes 字符串转byte切片
@@ -75,3 +77,6 @@ func Str2Bytes(s string) []byte {
 	h := [3]uintptr{x[0], x[1], x[1]}
 	return *(*[]byte)(unsafe.Pointer(&h))
 }
+
+//go:linkname std log.std
+var std *log.Logger
