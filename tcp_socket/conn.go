@@ -13,34 +13,34 @@ import (
 // HEADER_SIZE 消息头长度
 const HEADER_SIZE = int(unsafe.Sizeof(MessageHeader{}))
 
-// TcpClient tcp连接客户端
-type TcpClient struct {
+// TcpConn tcp连接客户端
+type TcpConn struct {
 	conn net.Conn
 	r    *bufio.Reader
 }
 
 // NewTcpClient 创建简单的连接客户端
-func NewTcpClient(conn net.Conn) *TcpClient {
-	return &TcpClient{conn: conn, r: bufio.NewReader(conn)}
+func NewTcpClient(conn net.Conn) *TcpConn {
+	return &TcpConn{conn: conn, r: bufio.NewReader(conn)}
 }
 
 // LocalAddr 本地通信地址
-func (c *TcpClient) LocalAddr() net.Addr {
+func (c *TcpConn) LocalAddr() net.Addr {
 	return c.conn.LocalAddr()
 }
 
 // RemoteAddr 对方通信地址
-func (c *TcpClient) RemoteAddr() net.Addr {
+func (c *TcpConn) RemoteAddr() net.Addr {
 	return c.conn.RemoteAddr()
 }
 
 // Close 关闭连接
-func (c *TcpClient) Close() error {
+func (c *TcpConn) Close() error {
 	return c.conn.Close()
 }
 
 // Write 向连接中写入消息
-func (c *TcpClient) Write(msg Message) (int, error) {
+func (c *TcpConn) Write(msg Message) (int, error) {
 	// 读取消息的长度
 	msg.Header.Length = int32(len(msg.Body))
 	var pkg = new(bytes.Buffer)
@@ -66,7 +66,7 @@ func (c *TcpClient) Write(msg Message) (int, error) {
 }
 
 // Read 从连接中读取消息
-func (c *TcpClient) Read() (Message, error) {
+func (c *TcpConn) Read() (Message, error) {
 	// Peek 返回缓存的一个切片，该切片引用缓存中前 n 个字节的数据，
 	// 该操作不会将数据读出，只是引用，引用的数据在下一次读取操作之
 	// 前是有效的。如果切片长度小于 n，则返回一个错误信息说明原因。
