@@ -1,6 +1,8 @@
 package leet_code
 
-import "sort"
+import (
+	"sort"
+)
 
 func longestCommonPrefix(strs []string) string {
 	if len(strs) == 1 {
@@ -371,4 +373,53 @@ func minOperations(nums []int, numsDivide []int) int {
 		return i
 	}
 	return -1
+}
+
+/**
+给你一个只包含 '(' 和 ')' 的字符串，找出最长有效（格式正确且连续）括号子串的长度
+*/
+func longestValidParentheses(s string) int {
+	bs := []byte(s)
+	for {
+		var has bool
+		var prefix = -1
+		for i := 0; i < len(bs); i++ {
+			if bs[i] == 0 {
+				continue
+			}
+			if prefix == -1 {
+				prefix = i
+				continue
+			}
+			if bs[i] == 41 && bs[prefix] == 40 {
+				bs[i] = 0
+				bs[prefix] = 0
+				has = true
+				prefix = -1
+			} else {
+				prefix = i
+			}
+		}
+		if !has {
+			break
+		}
+	}
+	var (
+		count int
+		max   int
+	)
+	for i := range bs {
+		if bs[i] == 0 {
+			count++
+		} else {
+			if max < count {
+				max = count
+			}
+			count = 0
+		}
+	}
+	if max < count {
+		max = count
+	}
+	return max
 }
