@@ -338,7 +338,8 @@ func parseNum(num int) int {
 	return res
 }
 
-/**
+/*
+*
 给你两个正整数数组 nums 和 numsDivide 。你可以从 nums 中删除任意数目的元素。
 
 请你返回使 nums 中 最小 元素可以整除 numsDivide 中所有元素的 最少 删除次数。如果无法得到这样的元素，返回 -1 。
@@ -375,7 +376,8 @@ func minOperations(nums []int, numsDivide []int) int {
 	return -1
 }
 
-/**
+/*
+*
 给你一个只包含 '(' 和 ')' 的字符串，找出最长有效（格式正确且连续）括号子串的长度
 */
 func longestValidParentheses(s string) int {
@@ -422,4 +424,27 @@ func longestValidParentheses(s string) int {
 		max = count
 	}
 	return max
+}
+
+/*
+给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
+*/
+func trap(height []int) int {
+	var (
+		ans = 0
+		h1  = 0
+		h2  = 0
+		r   = 0
+	)
+	for i, v := range height {
+		if v > h1 {
+			h1 = v
+		}
+		r = height[len(height)-i-1]
+		if r > h2 {
+			h2 = r
+		}
+		ans += h1 + h2 - v
+	}
+	return ans - len(height)*h1
 }
