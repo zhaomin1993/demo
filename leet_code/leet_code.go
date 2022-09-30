@@ -512,3 +512,55 @@ func fullJustify(words []string, maxWidth int) []string {
 	}
 	return res
 }
+
+/*
+给定一个字符串 (s) 和一个字符模式 (p) ，实现一个支持 '?' 和 '*' 的通配符匹配。
+'?' 可以匹配任何单个字符。
+'*' 可以匹配任意字符串（包括空字符串）。
+*/
+func isMatch(s string, p string) bool {
+	sLen := len(s)
+	pLen := len(p)
+	if pLen == 0 {
+		if sLen == 0 {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	si := 0
+	for i := range p {
+		switch p[i] {
+		case '*':
+			if i == pLen-1 {
+				return true
+			}
+			if s[si:] == "" {
+				continue
+			}
+			for ; si < sLen; si++ {
+				if isMatch(s[si:], p[i+1:]) {
+					return true
+				}
+			}
+			return false
+		case '?':
+			if si < sLen-1 {
+				si++
+			}
+		default:
+			if si >= sLen {
+				return false
+			}
+			if s[si] != p[i] {
+				return false
+			}
+			si++
+		}
+	}
+	if si < sLen {
+		return false
+	}
+	return true
+}
