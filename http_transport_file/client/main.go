@@ -16,16 +16,22 @@ import (
 )
 
 var (
-	serverAddress = flag.String("s", "localhost:8080", "服务端口")
+	serverAddress = flag.String("s", "", "服务端口")
 	rs            = flag.String("r", "", "")
 )
 
 func main() {
 	flag.Parse()
 	log.Printf("root==============%s\n", *rs)
+	if *serverAddress == "" {
+		*serverAddress = os.Getenv("SERVER_ADDRESS")
+	}
 	roots := strings.Split(*rs, ",")
 	for _, root := range roots {
 		err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
 			log.Println(path)
 			// 忽略文件夹
 			if info.IsDir() {

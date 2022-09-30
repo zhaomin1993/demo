@@ -2,13 +2,16 @@ package main
 
 import (
 	"bufio"
-	"github.com/gin-gonic/gin"
+	"crypto/tls"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/acme/autocert"
 )
 
 func main() {
@@ -28,7 +31,7 @@ func main() {
 			return
 		}
 		defer formFile.Close()
-		filePath := filepath.Join(`C:\Users\zhaomin\Desktop\temp_upload\`, fh.Filename)
+		filePath := filepath.Join(`/go/srv/data`, fh.Filename)
 		fileDir := filepath.Dir(filePath)
 		if !Exist(fileDir) {
 			if err = os.MkdirAll(fileDir, 0664); err != nil {
@@ -53,13 +56,19 @@ func main() {
 		}
 		context.JSON(http.StatusOK, gin.H{"code": 200, "msg": "success"})
 	})
+	m := &autocert.Manager{
+		Cache:  autocert.DirCache("secret-dir"),
+		Prompt: autocert.AcceptTOS,
+		// HostPolicy: autocert.HostWhitelist("example.org"),
+	}
 	server := &http.Server{
-		Addr:           "0.0.0.0:8080",
+		Addr:           "0.0.0.0:9999",
 		Handler:        r,
 		ReadTimeout:    time.Hour,
 		WriteTimeout:   time.Second * 10,
 		MaxHeaderBytes: 1 << 19,
 		IdleTimeout:    time.Hour,
+		TLSConfig:      &tls.Config{GetCertificate: m.GetCertificate},
 	}
 	serErr := server.ListenAndServe()
 	if serErr != nil {
