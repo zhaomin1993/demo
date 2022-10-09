@@ -519,48 +519,33 @@ func fullJustify(words []string, maxWidth int) []string {
 '*' 可以匹配任意字符串（包括空字符串）。
 */
 func isMatch(s string, p string) bool {
-	sLen := len(s)
-	pLen := len(p)
-	if pLen == 0 {
-		if sLen == 0 {
-			return true
+	sn := len(s)
+	pn := len(p)
+	i := 0
+	j := 0
+	start := -1
+	match := 0
+	for i < sn {
+		if j < pn && (s[i] == p[j] || p[j] == '?') {
+			i++
+			j++
+		} else if j < pn && p[j] == '*' {
+			start = j
+			match = i
+			j++
+		} else if start != -1 {
+			j = start + 1
+			match++
+			i = match
 		} else {
 			return false
 		}
 	}
-
-	si := 0
-	for i := range p {
-		switch p[i] {
-		case '*':
-			if i == pLen-1 {
-				return true
-			}
-			if s[si:] == "" {
-				continue
-			}
-			for ; si < sLen; si++ {
-				if isMatch(s[si:], p[i+1:]) {
-					return true
-				}
-			}
+	for j < pn {
+		if p[j] != '*' {
 			return false
-		case '?':
-			if si < sLen-1 {
-				si++
-			}
-		default:
-			if si >= sLen {
-				return false
-			}
-			if s[si] != p[i] {
-				return false
-			}
-			si++
 		}
-	}
-	if si < sLen {
-		return false
+		j++
 	}
 	return true
 }
