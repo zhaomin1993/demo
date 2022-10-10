@@ -549,3 +549,49 @@ func isMatch(s string, p string) bool {
 	}
 	return true
 }
+
+/*
+给你一个链表数组，每个链表都已经按升序排列。
+
+请你将所有链表合并到一个升序链表中，返回合并后的链表。
+*/
+func mergeKLists(lists []*ListNode) *ListNode {
+	for i := 0; i < len(lists); i++ {
+		if lists[i] == nil {
+			lists = append(lists[:i], lists[i+1:]...)
+			i--
+		}
+	}
+	if len(lists) == 1 {
+		return lists[0]
+	}
+	if len(lists) == 0 {
+		return nil
+	}
+	var node, f = &ListNode{}, &ListNode{}
+	f.Next = node
+
+	for {
+		var (
+			index int
+			min   = lists[0].Val
+		)
+		for i := range lists {
+			if lists[i].Val < min {
+				min = lists[i].Val
+				index = i
+			}
+		}
+		node.Val = min
+		lists[index] = lists[index].Next
+		if lists[index] == nil {
+			lists = append(lists[:index], lists[index+1:]...)
+		}
+		if len(lists) == 0 {
+			break
+		}
+		node.Next = &ListNode{}
+		node = node.Next
+	}
+	return f.Next
+}
