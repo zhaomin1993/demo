@@ -595,3 +595,71 @@ func mergeKLists(lists []*ListNode) *ListNode {
 	}
 	return f.Next
 }
+
+/*
+请你设计并实现一个满足  LRU (最近最少使用) 缓存 约束的数据结构。
+实现 LRUCache 类：
+LRUCache(int capacity) 以 正整数 作为容量 capacity 初始化 LRU 缓存
+int get(int key) 如果关键字 key 存在于缓存中，则返回关键字的值，否则返回 -1 。
+void put(int key, int value) 如果关键字 key 已经存在，则变更其数据值 value ；
+如果不存在，则向缓存中插入该组 key-value 。如果插入操作导致关键字数量超过 capacity ，则应该 逐出 最久未使用的关键字。
+*/
+type LRUCache struct {
+	cache    map[int]int
+	queue    []int
+	capacity int
+}
+
+func Constructor(capacity int) LRUCache {
+	return LRUCache{
+		cache:    make(map[int]int, capacity),
+		queue:    make([]int, 0, capacity),
+		capacity: capacity,
+	}
+}
+
+func (this *LRUCache) Get(key int) int {
+	value, ok := this.cache[key]
+	if !ok { // 不存在返回-1
+		value = -1
+	} else { // 存在
+		// 查找index
+		var index = -1
+		for i, v := range this.queue {
+			if v == key {
+				index = i
+				break
+			}
+		}
+		// 根据index删除这个key
+		this.queue = append(this.queue[:index], this.queue[index+1:]...)
+		// 再将key放到最后
+		this.queue = append(this.queue, key)
+	}
+	return value
+}
+
+func (this *LRUCache) Put(key int, value int) {
+	_, ok := this.cache[key]
+	if ok { // 存在则更新
+		// 查找index
+		var index = -1
+		for i, v := range this.queue {
+			if v == key {
+				index = i
+				break
+			}
+		}
+		// 根据index删除这个key
+		this.queue = append(this.queue[:index], this.queue[index+1:]...)
+	} else if len(this.cache) == this.capacity { // 不存在并且容量已满
+		// 如果缓存已满，则删除queue中第一个key
+		delKey := this.queue[0]
+		this.queue = this.queue[1:]
+		delete(this.cache, delKey)
+	}
+	// 再将key放到最后
+	this.queue = append(this.queue, key)
+	// 赋值
+	this.cache[key] = value
+}
