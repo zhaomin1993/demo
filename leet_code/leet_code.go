@@ -663,3 +663,21 @@ func (this *LRUCache) Put(key int, value int) {
 	// 赋值
 	this.cache[key] = value
 }
+
+// reverseList 反转链表
+func reverseList(head *ListNode) *ListNode {
+	if head == nil {
+		return head
+	}
+	var node = &ListNode{}
+	for head != nil {
+		node.Val = head.Val
+		if head.Next != nil {
+			n := &ListNode{}
+			n.Next = node
+			node = n
+		}
+		head = head.Next
+	}
+	return node
+}
