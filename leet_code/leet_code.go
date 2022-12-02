@@ -681,3 +681,72 @@ func reverseList(head *ListNode) *ListNode {
 	}
 	return node
 }
+
+// 链表排序
+func sortList(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	prev := &ListNode{Next: head}
+	quickSort(prev, nil)
+	return prev.Next
+}
+
+func isOrdered(l, r *ListNode) bool {
+	node := l.Next
+	temp := node.Val
+	for node != r {
+		if temp > node.Val {
+			return false
+		}
+		temp = node.Val
+		node = node.Next
+	}
+	return true
+}
+
+func partition(l, r *ListNode) *ListNode {
+	p := l.Next.Next
+	lessHead := &ListNode{}
+	lessPointer := lessHead
+	moreHead := &ListNode{}
+	morePointer := moreHead
+	m := l.Next
+	for p != r {
+		if p.Val <= m.Val {
+			lessPointer.Next = p
+			lessPointer = lessPointer.Next
+		} else {
+			morePointer.Next = p
+			morePointer = morePointer.Next
+		}
+		p = p.Next
+	}
+	// 形成 l->lessHead->lessPointer->m->moreHead->morePointer->r的链表
+	if lessHead.Next != nil {
+		l.Next = lessHead.Next
+		lessPointer.Next = m
+	} else {
+		l.Next = m
+	}
+	if moreHead.Next != nil {
+		m.Next = moreHead.Next
+		morePointer.Next = r
+	} else {
+		m.Next = r
+	}
+	return m
+}
+
+func quickSort(l, r *ListNode) {
+	if l.Next == r || l.Next.Next == r {
+		return
+	}
+	m := partition(l, r)
+	// 优化点1 如果有序就返回 最好效率提升到O(n)
+	if isOrdered(l, r) {
+		return
+	}
+	quickSort(l, m)
+	quickSort(m, r)
+}
