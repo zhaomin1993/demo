@@ -750,3 +750,54 @@ func quickSort(l, r *ListNode) {
 	quickSort(l, m)
 	quickSort(m, r)
 }
+
+// 链表删除val
+func removeElements(head *ListNode, val int) *ListNode {
+	var first = &ListNode{}
+	var prev *ListNode = nil
+	for head != nil {
+		if head.Val != val {
+			if first.Next == nil {
+				first.Next = head
+			}
+			prev = head
+		} else if prev != nil {
+			prev.Next = head.Next
+		}
+		head = head.Next
+	}
+	return first.Next
+}
+
+//对于列表中的每个节点 node ，如果其右侧存在一个具有 严格更大 值的节点，则移除 node
+func removeNodes(head *ListNode) *ListNode {
+	var prev, first *ListNode
+	for head != nil {
+		if head.Next != nil {
+			if head.Val < head.Next.Val {
+				if first != nil && first.Val < head.Next.Val {
+					head = head.Next
+				} else if prev != nil {
+					prev.Next = head.Next
+					head = first
+				} else if prev == nil {
+					head = head.Next
+				}
+				prev = nil
+				first = nil
+				continue
+			}
+			if first == nil {
+				first = head
+			}
+			prev = head
+			head = head.Next
+		} else {
+			if first == nil {
+				first = head
+			}
+			break
+		}
+	}
+	return first
+}
