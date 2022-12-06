@@ -801,3 +801,72 @@ func removeNodes(head *ListNode) *ListNode {
 	}
 	return first
 }
+
+// 给定一个已排序的链表的头 head ， 删除原始链表中所有重复数字的节点，只留下不同的数字 。返回 已排序的链表
+// 1-2-3-3-4-4-5  --->  1-2-5
+func deleteDuplicates(head *ListNode) *ListNode {
+	var first, prev, mark *ListNode
+	for head != nil {
+		if head.Next != nil {
+			if head.Val == head.Next.Val {
+				// 标记上一个等于的
+				mark = head.Next
+				head = head.Next.Next
+				// 跳过当前和下一个
+				if prev == nil {
+					prev = head
+				} else {
+					prev.Next = head
+				}
+			} else if mark != nil && mark.Val == head.Val { // 如果上一个等于当前的
+				mark = head
+				head = head.Next
+				if prev == nil {
+					prev = head
+				} else {
+					prev.Next = head
+				}
+			} else {
+				if first == nil {
+					first = head
+				}
+				mark = nil
+				prev = head
+				head = head.Next
+			}
+		} else {
+			if mark != nil && mark.Val == head.Val {
+				prev.Next = nil
+			}
+			if (mark == nil || (mark != nil && mark.Val != head.Val)) && first == nil {
+				first = head
+			}
+			break
+		}
+	}
+	return first
+}
+
+//  删除链表的倒数第 N 个结点
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+	var i int
+	var curr = head
+	for curr != nil {
+		i++
+		curr = curr.Next
+	}
+	if n == i {
+		return head.Next
+	}
+	curr = head
+	for curr != nil {
+		i--
+		if i != n {
+			curr = curr.Next
+			continue
+		}
+		curr.Next = curr.Next.Next
+		break
+	}
+	return head
+}
