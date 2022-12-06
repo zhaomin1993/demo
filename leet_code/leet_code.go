@@ -870,3 +870,46 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 	}
 	return head
 }
+
+type Node struct {
+	Val  int
+	Next *Node
+}
+
+// 给定循环单调非递减列表中的一个点，写一个函数向这个列表中插入一个新元素 insertVal ，使这个列表仍然是循环升序的。
+func insert(aNode *Node, x int) *Node {
+	if aNode == nil {
+		n := &Node{Val: x}
+		n.Next = n
+		return n
+	}
+	curr := aNode
+	for curr != nil {
+		if curr.Val-curr.Next.Val == 0 {
+			if curr.Next == aNode {
+				next := &Node{Val: x, Next: aNode}
+				curr.Next = next
+				break
+			}
+		} else if curr.Val-curr.Next.Val < 0 { // 升序
+			if curr.Val-x <= 0 && curr.Next.Val-x >= 0 { // 升序
+				next := curr.Next
+				curr.Next = &Node{Val: x, Next: next}
+				break
+			}
+		} else { // 降序
+			if curr.Val <= x {
+				next := curr.Next
+				curr.Next = &Node{Val: x, Next: next}
+				break
+			}
+			if curr.Next.Val >= x {
+				next := curr.Next
+				curr.Next = &Node{Val: x, Next: next}
+				break
+			}
+		}
+		curr = curr.Next
+	}
+	return aNode
+}
