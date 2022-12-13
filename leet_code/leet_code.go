@@ -913,3 +913,17 @@ func insert(aNode *Node, x int) *Node {
 	}
 	return aNode
 }
+
+// 找出不重复的数字
+func singleNumber(nums []int) int {
+	var n int
+	for _, num := range nums {
+		n ^= num
+	}
+	return n
+}
+
+func majorityElement(nums []int) int {
+	sort.Ints(nums)
+	return nums[len(nums)/2]
+}
